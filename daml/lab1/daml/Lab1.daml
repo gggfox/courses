@@ -1,0 +1,33 @@
+module Lab1 where
+
+import Daml.Script
+
+hello: Text -> Text
+hello x = "Hello " <> x
+
+quadFunction: Int -> Int -> Int -> Int
+quadFunction x y z = (3 * x ^ 2) + (2 * y) + z
+
+doubleMe: Int -> Int
+doubleMe x = 2 * x 
+
+doubleUs: Int -> Int -> Int
+doubleUs x y = 2 * x + 2 * y
+
+testHello: Script ()
+testHello = script do
+    debug $ hello "Chris"
+
+testQuad: Script ()
+testQuad = script do
+    debug $ quadFunction 1 2 3
+
+testLambda: Script ()
+testLambda = script do
+    debug $ (\x y z -> (3 * x ^ 2) + (2 * y) + z) 3 3 3
+
+testDouble: Script()
+testDouble = script do
+    debug $ doubleMe 3
+    debug $ doubleUs 3 4
+    debug $ 3 `doubleUs` 4

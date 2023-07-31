@@ -1,0 +1,37 @@
+module Lab5 where
+
+import Daml.Script
+import DA.List as L
+import DA.Map as Map
+import DA.Text as T
+
+song : [(Text, Text)]
+song = [("do", "a deer, a female deer"), ("re", "a drop of golden sun"), ("mi", "a name, I call myself"), ("fa", "a long long way to run")]
+
+termFrequency: Text -> Text -> Decimal
+termFrequency word sentence = intToDecimal (L.length (L.filter (\w -> w == word) (T.words sentence))) / intToDecimal (L.length (T.words sentence))
+
+multiTermFrequency: Text -> [Text] -> [Decimal]
+multiTermFrequency x y = foldl (\acc b -> [termFrequency x b] <> acc) [] y
+
+multiTermFrequencyR: Text -> [Text] -> [Decimal]
+multiTermFrequencyR word list = foldr (\sentence acc -> [termFrequency word sentence] <> acc) [] list
+
+
+test: Script()
+test = script do 
+  debug $ map fst song 
+  debug $ map snd song
+
+testMultiTermFrequency : Script ()
+testMultiTermFrequency = script do 
+  let x = "hello"
+  let y = [ "hello from the other side I must have called a thousand times", 
+          "You say goodbye and I say hello hello hello",
+          "hello is it me you’re looking for",
+          "hello hello is anyone home"
+          ]
+
+  debug $ multiTermFrequency x y
+  debug $ multiTermFrequencyR x y
+  return()

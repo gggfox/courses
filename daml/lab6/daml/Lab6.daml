@@ -1,0 +1,34 @@
+module Lab6 where
+
+import Daml.Script
+
+
+
+data Account = Account with
+  ownerId: Text
+  balance: Decimal
+    deriving (Ord, Eq, Show)
+
+safeQuery: Account -> Text -> Optional Decimal
+safeQuery a id = 
+  if a.ownerId == id then Some a.balance
+  else None
+
+
+
+testSafeAccount: Script()
+testSafeAccount = script do 
+
+    let myAccount = Account with 
+            ownerId = "123"
+            balance = 100.00
+
+        myBalance1: Optional Decimal = safeQuery myAccount "123"
+
+    debug $ myBalance1
+
+    let myBalance2: Optional Decimal = safeQuery myAccount "234"
+
+    debug $ myBalance2
+
+    return ()

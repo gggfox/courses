@@ -1,0 +1,44 @@
+module Lab2 where
+
+import Daml.Script
+import DA.List as L
+import DA.Map as Map
+import DA.Text as T
+
+hi: Int -> Int
+hi x = x
+
+song = [("do", "a deer, a female deer"), ("re", "a drop of golden sun"), ("mi", "a name, I call myself"), ("fa", "a long long way to run")]
+
+loop:((Text, Text) -> Text) -> [(Text,Text)] -> [Text]
+loop fn [] = []
+loop fn list = [fn (head list)] <> loop fn (tail list)
+
+
+notes = loop fst song
+meaning = loop snd song
+
+
+notesMap: Map Text Text
+notesMap = Map.fromList song
+
+printMap: Text -> Optional Text
+printMap key = (Map.lookup key notesMap)
+
+termFrequency: Text -> Text -> Decimal
+termFrequency word sentence = intToDecimal (L.length (L.filter (\w -> w == word) (T.words sentence))) / intToDecimal (L.length (T.words sentence))
+
+
+test: Script ()
+test = script do 
+  debug $ notes
+  debug $ meaning
+  debug $ L.reverse notes
+  debug $ L.reverse meaning
+  
+  debug $  printMap "do"
+  debug $  printMap "re" 
+  debug $  printMap "mi"
+  debug $  printMap "fa"
+
+  debug $ termFrequency "long" "a long long way to run"
